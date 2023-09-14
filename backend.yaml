@@ -1,0 +1,36 @@
+apiVersion: apps/v1 # API version
+kind: Deployment # Type of kubernetes resource
+metadata:
+  name: ${backendApp.serviceName}-deployment # Name of the kubernetes resource
+  namespace: ${namespace}
+spec:
+  replicas: ${backendApp.deploymentReplicas} # No of replicas/pods to run
+  selector:
+    matchLabels: # This deployment applies to Pods matching the specified labels
+      app: ${backendApp.serviceName}
+  template: # Template for creating the Pods in this deployment
+    metadata:
+      labels: # Labels that will be applied to all the Pods in this deployment
+        app: ${backendApp.serviceName}
+    spec: # Spec for the containers that will run inside the Pods
+      containers:
+        - name: ${backendApp.serviceName}
+          image: ${DOCKER_REGISTRY}/${backendApp.imageName}:${backendApp.imageVersion}
+          imagePullPolicy: ${backendApp.imagePullPolicy}
+          ports:
+            - containerPort: ${backendApp.containerPort} # Should match the Port that the container listens on
+          env: ${backendApp.config}
+---
+apiVersion: v1 # API version
+kind: Service # Type of kubernetes resource
+metadata:
+  name: ${backendApp.serviceName} # Name of the kubernetes resource
+  namespace: ${namespace}
+spec:
+  type: ${backendApp.serviceType} # Exposes the service by opening a port on each node
+  selector:
+    app: ${backendApp.serviceName} # Any Pod matching the label `app=polling-app-client` will be picked up by this service
+  ports: # Forward incoming connections on port 80 to the target port 80 in the Pod
+    - port: ${backendApp.containerPort}
+      targetPort: ${backendApp.containerPort}
+      nodePort: ${backendApp.externalPort}
