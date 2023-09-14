@@ -19,6 +19,7 @@ spec:
           imagePullPolicy: ${imagePullPolicy}
           ports:
             - containerPort: ${containerPort} # Should match the Port that the container listens on
+          env: ${config}
 ---
 apiVersion: v1 # API version
 kind: Service # Type of kubernetes resource
