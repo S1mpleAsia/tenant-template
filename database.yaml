@@ -20,6 +20,13 @@ spec:
           ports:
             - containerPort: ${database.containerPort} # Should match the Port that the container listens on
           env: ${database.config}
+          volumeMounts:
+            - mountPath: ${database.mountPath}
+              name: ${database.name}
+      volumes:
+        - name: ${database.name}
+          persistentVolumeClaim:
+            claimName: ${database.name}
 ---
 apiVersion: v1 # API version
 kind: Service # Type of kubernetes resource
