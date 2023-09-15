@@ -26,7 +26,7 @@ spec:
       volumes:
         - name: ${database.name}
           persistentVolumeClaim:
-            claimName: ${database.name}
+            claimName: ${database.claimName}
 ---
 apiVersion: v1 # API version
 kind: Service # Type of kubernetes resource
